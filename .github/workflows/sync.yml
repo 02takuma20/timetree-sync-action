@@ -31,7 +31,7 @@ jobs:
       - name: Run
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
-          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
+          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_SECRET }}
           TIMETREE_CALENDAR_CODE: ${{ secrets.TIMETREE_CALENDAR_CODE }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
