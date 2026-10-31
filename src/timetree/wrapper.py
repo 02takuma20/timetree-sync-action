@@ -16,3 +16,8 @@ class TimeTree:
 
     def get_events(self, calendar):
         return self._service.get_events(calendar)
+
+    def get_labels(self, calendar):
+        return self._service.get_labels(calendar)
+
+
