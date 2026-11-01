@@ -45,12 +45,35 @@ def sync():
     try:
         labels = client.get_labels(calendar)
         logger.info("Fetched %d labels", len(labels))
+        labels_ok = True
     except Exception:
         logger.warning("Failed to fetch labels; syncing without colors", exc_info=True)
         labels = {}
+        labels_ok = False
 
     raw_events = client.get_events(calendar)
     events = [Event.from_timetree(raw, labels) for raw in raw_events]
+
+    # User rule (2026-11-01): sync only the user's own events — those whose
+    # TimeTree label maps to Google colorId 5 (yellow) or 2 (green). All
+    # other events (the wife's blue 7 / pink 4, any other color, unlabeled)
+    # are excluded, and their existing Google copies are removed by the
+    # cleanup pass below because their IDs fall out of timetree_ids.
+    # Safety: if labels could not be fetched, skip the filter entirely —
+    # otherwise every event would look unlabeled and all Google copies
+    # would be deleted.
+    if labels_ok:
+        allowed_color_ids = {"5", "2"}
+        total_events = len(events)
+        events = [e for e in events if e.color_id in allowed_color_ids]
+        logger.info(
+            "Color filter: kept %d of %d events (colorId 5/2 only)",
+            len(events),
+            total_events,
+        )
+    else:
+        logger.warning("Color filter skipped because labels are unavailable")
+
     timetree_ids = {event.id for event in events}
 
     google = GoogleCalendarClient(
