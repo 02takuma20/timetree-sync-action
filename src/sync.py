@@ -72,7 +72,7 @@ def sync():
             len(events),
         )
 
-    google = GoogleCalendarClient(Config.GOOGLE_CREDENTIALS_JSON)
+    google = GoogleCalendarClient(Config.GOOGLE_SERVICE_ACCOUNT_JSON)
     logger.info("Connecting to Google Calendar")
     google.get_calendar(Config.GOOGLE_CALENDAR_ID)
     logger.info("Connected to Google Calendar")
